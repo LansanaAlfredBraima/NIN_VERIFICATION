@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orange SL - Telecom Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --orange-primary: #FF7900;
+            --black-deep: #000000;
+            --black-soft: #1a1a1a;
+            --white: #ffffff;
+            --gray-light: #f4f4f4;
+            --gray-border: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gray-light);
+            color: var(--black-deep);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar-orange {
+            background-color: var(--black-deep);
+            border-bottom: 4px solid var(--orange-primary);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            color: var(--white) !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand span {
+            color: var(--orange-primary);
+        }
+
+        .user-badge {
+            background: var(--orange-primary);
+            color: var(--black-deep);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Cards */
+        .card-custom {
+            background: var(--white);
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-header-custom {
+            background: var(--black-deep);
+            color: var(--white);
+            padding: 15px 20px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--orange-primary);
+        }
+
+        .card-body-custom {
+            padding: 25px;
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            background: var(--black-deep);
+            color: var(--white);
+            padding: 25px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid var(--orange-primary);
+        }
+
+        .stat-card.orange {
+            background: var(--orange-primary);
+            color: var(--black-deep);
+            border-bottom: 4px solid var(--black-deep);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        .stat-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            opacity: 0.1;
+        }
+
+        /* Inputs & Buttons */
+        .form-control-custom {
+            border: 2px solid var(--gray-border);
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .form-control-custom:focus {
+            border-color: var(--orange-primary);
+            box-shadow: none;
+        }
+
+        .btn-orange {
+            background-color: var(--orange-primary);
+            color: var(--black-deep);
+            font-weight: 700;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .btn-orange:hover {
+            background-color: #e66e00;
+            color: var(--white);
+        }
+
+        .btn-black {
+            background-color: var(--black-deep);
+            color: var(--white);
+            font-weight: 600;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .btn-black:hover {
+            background-color: var(--black-soft);
+            color: var(--orange-primary);
+        }
+
+        /* Tables */
+        .table-custom {
+            width: 100%;
+        }
+
+        .table-custom thead th {
+            background-color: var(--gray-light);
+            color: var(--black-deep);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            padding: 15px;
+            border-bottom: 2px solid var(--orange-primary);
+        }
+
+        .table-custom tbody td {
+            padding: 15px;
+            border-bottom: 1px solid var(--gray-border);
+            vertical-align: middle;
+        }
+
+        /* Badges */
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #2e7d32;
+        }
+
+        .status-blocked {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #c62828;
+        }
+
+        .status-suspended {
+            background-color: #fff8e1;
+            color: #f57f17;
+            border: 1px solid #f57f17;
+        }
+
+        /* Verification Result */
+        .result-photo {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 3px solid var(--orange-primary);
+            border-radius: 8px;
+        }
+
+        .info-group {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--black-deep);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .nin-highlight {
+            color: var(--orange-primary);
+            font-weight: 700;
+            font-family: monospace;
+            font-size: 1.2rem;
+        }
+
+        /* Responsive Design - Media Queries */
+
+        /* Tablet */
+        @media (max-width: 992px) {
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .stat-icon {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Mobile Landscape & Small Tablet */
+        @media (max-width: 768px) {
+            .container-fluid {
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+            }
+
+            .navbar-orange {
+                padding: 10px 0;
+            }
+
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+            }
+
+            .stat-icon {
+                font-size: 2rem;
+                right: 15px;
+            }
+
+            .card-header-custom {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+
+            .card-body-custom {
+                padding: 15px;
+            }
+
+            .btn-orange,
+            .btn-black {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            .form-control-custom {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .table-custom {
+                min-width: 600px;
+            }
+
+            .table-custom thead th,
+            .table-custom tbody td {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+
+            .result-photo {
+                width: 80px;
+                height: 80px;
+            }
+
+            .info-value {
+                font-size: 1rem;
+            }
+        }
+
+        /* Mobile Portrait */
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1rem;
+            }
+
+            .stat-card {
+                padding: 12px;
+            }
+
+            .stat-value {
+                font-size: 1.3rem;
+            }
+
+            .stat-label {
+                font-size: 0.7rem;
+            }
+
+            .stat-icon {
+                display: none;
+            }
+
+            .card-header-custom {
+                padding: 10px 12px;
+                font-size: 0.85rem;
+            }
+
+            .card-body-custom {
+                padding: 12px;
+            }
+
+            .btn-orange,
+            .btn-black {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+
+            .table-custom {
+                font-size: 0.75rem;
+            }
+
+            .table-custom thead th,
+            .table-custom tbody td {
+                padding: 8px 5px;
+            }
+
+            .badge-status {
+                font-size: 0.65rem;
+                padding: 4px 8px;
+            }
+
+            .result-photo {
+                width: 70px;
+                height: 70px;
+            }
+
+            .info-value {
+                font-size: 0.9rem;
+            }
+
+            .nin-highlight {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-orange sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-signal me-2"></i>
+                ORANGE<span>SL</span>
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end d-none d-md-block">
+                    <div class="text-white small opacity-75">OPERATOR</div>
+                    <div class="text-white fw-bold" id="orgName">Telecom Officer</div>
+                </div>
+                <a href="/logout" class="btn btn-sm btn-outline-light">LOGOUT</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Stats Row -->
+        <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card orange">
+                    <div class="stat-value" id="verificationCount">0</div>
+                    <div class="stat-label">Verifications Today</div>
+                    <i class="fas fa-check-circle stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalSims">0</div>
+                    <div class="stat-label">Active SIM Cards</div>
+                    <i class="fas fa-sim-card stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalRecords">--</div>
+                    <div class="stat-label">Total Database Records</div>
+                    <i class="fas fa-database stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card">
+                    <div class="stat-value" id="currentTime">--:--</div>
+                    <div class="stat-label">System Time</div>
+                    <i class="fas fa-clock stat-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left Column: Operations -->
+            <div class="col-lg-4">
+                <!-- Search -->
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <span><i class="fas fa-search me-2"></i>SEARCH DATABASE</span>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="input-group">
+                            <input type="text" id="searchInput" class="form-control form-control-custom"
+                                placeholder="Search Name, NIN, or Phone...">
+                            <button class="btn btn-black" type="button" id="searchBtn">GO</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verification -->
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <span><i class="fas fa-fingerprint me-2"></i>IDENTITY VERIFICATION</span>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">NATIONAL ID NUMBER</label>
+                            <div class="input-group">
+                                <input type="text" id="ninInput" class="form-control form-control-custom"
+                                    placeholder="SL-XXXXXXXX">
+                                <button class="btn btn-orange" type="button" id="verifyBtn">VERIFY</button>
+                            </div>
+                        </div>
+                        <div id="errorArea" class="alert alert-danger d-none">
+                            <i class="fas fa-exclamation-triangle me-2"></i><span id="errorMessage"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics -->
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <span><i class="fas fa-chart-bar me-2"></i>QUICK ANALYTICS</span>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="row text-center mb-4">
+                            <div class="col-6 border-end">
+                                <div class="display-6 fw-bold text-dark" id="todayCount">0</div>
+                                <div class="small text-muted fw-bold">TODAY</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="display-6 fw-bold text-dark" id="weekCount">0</div>
+                                <div class="small text-muted fw-bold">THIS WEEK</div>
+                            </div>
+                        </div>
+                        <h6 class="small fw-bold text-muted border-bottom pb-2 mb-3">STATUS BREAKDOWN</h6>
+                        <div id="statusBreakdown">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Column: Results -->
+            <div class="col-lg-4">
+                <div id="resultArea" style="display: none;" class="card-custom h-100">
+                    <div class="card-header-custom bg-success border-success">
+                        <span><i class="fas fa-user-check me-2"></i>IDENTITY VERIFIED</span>
+                        <span class="badge bg-white text-success">MATCH FOUND</span>
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="d-flex align-items-start mb-4">
+                            <img id="userPhoto" src="" alt="User Photo" class="result-photo me-4">
+                            <div class="flex-grow-1">
+                                <div class="info-group">
+                                    <div class="info-label">Full Name</div>
+                                    <div class="info-value"><span id="firstName"></span> <span id="lastName"></span>
+                                    </div>
+                                </div>
+                                <div class="info-group">
+                                    <div class="info-label">NIN</div>
+                                    <div class="info-value nin-highlight" id="ninDisplay"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <div class="info-group">
+                                    <div class="info-label">Date of Birth</div>
+                                    <div class="info-value" id="dob"></div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="info-group">
+                                    <div class="info-label">Gender</div>
+                                    <div class="info-value" id="gender"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="info-group">
+                                    <div class="info-label">Address</div>
+                                    <div class="info-value" id="address"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-light p-3 rounded border border-warning">
+                            <h6 class="fw-bold text-dark mb-3"><i class="fas fa-sim-card me-2 text-warning"></i>REGISTER
+                                NEW SIM</h6>
+                            <div class="input-group">
+                                <input type="tel" id="phoneNumberInput" class="form-control form-control-custom"
+                                    placeholder="07XXXXXXXX">
+                                <button class="btn btn-black" type="button" id="registerSimBtn">LINK SIM</button>
+                            </div>
+                            <div class="form-text mt-2">Enter 9-digit Orange number (starts with 07)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Placeholder -->
+                <div id="placeholderArea" class="card-custom h-100 d-flex align-items-center justify-content-center"
+                    style="min-height: 400px; background-color: #f8f9fa; border: 2px dashed #ddd;">
+                    <div class="text-center text-muted">
+                        <i class="fas fa-search fa-4x mb-3 opacity-25"></i>
+                        <h5>Ready to Verify</h5>
+                        <p>Enter a National ID Number to begin</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Logs -->
+            <div class="col-lg-4">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <span><i class="fas fa-history me-2"></i>RECENT ACTIVITY</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>NIN</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentVerifications">
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-3">No recent activity</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <span><i class="fas fa-list me-2"></i>SIM REGISTRY</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>NIN</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="simRegistrationsTable">
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-3">Loading registry...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal -->
+    <div class="modal fade" id="customModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white border-bottom-0">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Notification</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <div class="d-flex align-items-center">
+                        <i id="modalIcon" class="fas fa-info-circle fa-2x me-3 text-primary"></i>
+                        <p id="modalMessage" class="mb-0 fs-6 fw-medium">Message goes here</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"
+                        id="modalCancelBtn">Close</button>
+                    <button type="button" class="btn btn-sm" style="background-color: #FF7900; color: white;"
+                        id="modalConfirmBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Core Logic Preserved
+        let verificationCount = 0;
+        let recentVerifications = [];
+        let modalInstance = null;
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        function showModal(title, message, type = 'info', onConfirm = null) {
+            const modalEl = document.getElementById('customModal');
+            const titleEl = document.getElementById('modalTitle');
+            const msgEl = document.getElementById('modalMessage');
+            const iconEl = document.getElementById('modalIcon');
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+            const cancelBtn = document.getElementById('modalCancelBtn');
+
+            if (!modalInstance) {
+                modalInstance = new bootstrap.Modal(modalEl);
+            }
+
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+
+            // Reset classes
+            iconEl.className = 'fas fa-2x me-3';
+            confirmBtn.className = 'btn btn-sm text-white fw-bold';
+
+            // Configure based on type
+            if (type === 'success') {
+                iconEl.classList.add('fa-check-circle', 'text-success');
+                confirmBtn.style.display = 'none';
+                cancelBtn.textContent = 'OK';
+                cancelBtn.className = 'btn btn-success btn-sm';
+            } else if (type === 'error') {
+                iconEl.classList.add('fa-exclamation-circle', 'text-danger');
+                confirmBtn.style.display = 'none';
+                cancelBtn.textContent = 'Close';
+                cancelBtn.className = 'btn btn-danger btn-sm';
+            } else if (type === 'confirm') {
+                iconEl.classList.add('fa-question-circle', 'text-warning');
+                confirmBtn.classList.add('btn-warning');
+                confirmBtn.style.display = 'inline-block';
+                confirmBtn.textContent = 'Yes, Proceed';
+                cancelBtn.textContent = 'Cancel';
+                cancelBtn.className = 'btn btn-secondary btn-sm';
+
+                // Remove old listeners
+                const newConfirmBtn = confirmBtn.cloneNode(true);
+                confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+                newConfirmBtn.addEventListener('click', () => {
+                    if (onConfirm) onConfirm();
+                    modalInstance.hide();
+                });
+            } else {
+                iconEl.classList.add('fa-info-circle', 'text-primary');
+                confirmBtn.style.display = 'none';
+                cancelBtn.textContent = 'OK';
+                cancelBtn.className = 'btn btn-secondary btn-sm';
+            }
+
+            modalInstance.show();
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'ACTIVE': 'status-active',
+                'BLOCKED': 'status-blocked',
+                'SUSPENDED': 'status-suspended',
+                'LOST': 'status-blocked'
+            };
+            return badges[status] || 'badge bg-secondary';
+        }
+
+        function getStatusActions(phone, currentStatus) {
+            const actions = [];
+            if (currentStatus !== 'ACTIVE') {
+                actions.push(`<button class="btn btn-sm btn-outline-success border-0 me-1" onclick="updateStatus('${phone}', 'ACTIVE')" title="Activate"><i class="fas fa-check"></i></button>`);
+            }
+            if (currentStatus !== 'SUSPENDED') {
+                actions.push(`<button class="btn btn-sm btn-outline-warning border-0 me-1" onclick="updateStatus('${phone}', 'SUSPENDED')" title="Suspend"><i class="fas fa-pause"></i></button>`);
+            }
+            if (currentStatus !== 'BLOCKED') {
+                actions.push(`<button class="btn btn-sm btn-outline-danger border-0 me-1" onclick="updateStatus('${phone}', 'BLOCKED')" title="Block"><i class="fas fa-ban"></i></button>`);
+            }
+            actions.push(`<button class="btn btn-sm btn-outline-secondary border-0" onclick="deleteSim('${phone}')" title="Delete"><i class="fas fa-trash"></i></button>`);
+            return actions.join('');
+        }
+
+        window.deleteSim = (phone) => {
+            showModal('Delete SIM', `Are you sure you want to DELETE SIM: ${phone}?`, 'confirm', async () => {
+                try {
+                    const res = await fetch(`/telecom/sim-registration/${encodeURIComponent(phone)}`, {
+                        method: 'DELETE'
+                    });
+
+                    const data = await res.json();
+                    if (data.success) {
+                        loadSimRegistrations();
+                        loadAnalytics();
+                        showModal('Success', 'SIM Deleted Successfully', 'success');
+                    } else {
+                        showModal('Error', 'Error: ' + data.error, 'error');
+                    }
+                } catch (err) {
+                    showModal('System Error', 'An unexpected error occurred', 'error');
+                }
+            });
+        };
+
+        window.updateStatus = (phone, status) => {
+            showModal('Update Status', `Change status of ${phone} to ${status}?`, 'confirm', async () => {
+                try {
+                    const res = await fetch('/telecom/sim-status', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone_number: phone, status: status })
+                    });
+
+                    const data = await res.json();
+                    if (data.success) {
+                        loadSimRegistrations();
+                        loadAnalytics();
+                        showModal('Success', 'Status Updated Successfully', 'success');
+                    } else {
+                        showModal('Error', 'Error: ' + data.error, 'error');
+                    }
+                } catch (err) {
+                    showModal('System Error', 'An unexpected error occurred', 'error');
+                }
+            });
+        };
+
+        document.getElementById('searchBtn').addEventListener('click', async () => {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+
+            try {
+                const res = await fetch(`/telecom/search?query=${encodeURIComponent(query)}`);
+                const data = await res.json();
+
+                if (data.success && data.data.length > 0) {
+                    displaySearchResults(data.data);
+                } else {
+                    showModal('No Results', 'No matching records found', 'info');
+                }
+            } catch (err) {
+                showModal('Search Failed', 'Unable to perform search', 'error');
+            }
+        });
+
+        function displaySearchResults(results) {
+            const tbody = document.getElementById('simRegistrationsTable');
+            tbody.innerHTML = results.map(reg =>
+                `<tr>
+                    <td class="fw-bold">${reg.first_name} ${reg.last_name}</td>
+                    <td>${reg.phone_number}</td>
+                    <td class="text-muted small">${reg.nin}</td>
+                    <td><span class="badge-status ${getStatusBadge(reg.status)}">${reg.status}</span></td>
+                    <td>${getStatusActions(reg.phone_number, reg.status)}</td>
+                </tr>`
+            ).join('');
+        }
+
+        document.getElementById('verifyBtn').addEventListener('click', async () => {
+            const nin = document.getElementById('ninInput').value.trim();
+            const resultArea = document.getElementById('resultArea');
+            const placeholderArea = document.getElementById('placeholderArea');
+            const errorArea = document.getElementById('errorArea');
+
+            if (!nin) {
+                document.getElementById('errorMessage').textContent = 'Please enter a NIN';
+                errorArea.classList.remove('d-none');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/verify/${nin}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('firstName').textContent = data.data.first_name;
+                    document.getElementById('lastName').textContent = data.data.last_name;
+                    document.getElementById('dob').textContent = data.data.dob;
+                    document.getElementById('gender').textContent = data.data.gender;
+                    document.getElementById('address').textContent = data.data.address;
+                    document.getElementById('ninDisplay').textContent = data.data.nin;
+                    document.getElementById('userPhoto').src = data.data.photo_url || 'https://via.placeholder.com/150?text=No+Photo';
+
+                    resultArea.style.display = 'block';
+                    placeholderArea.style.display = 'none';
+                    errorArea.classList.add('d-none');
+
+                    verificationCount++;
+                    document.getElementById('verificationCount').textContent = verificationCount;
+
+                    recentVerifications.unshift({
+                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                        nin: data.data.nin,
+                        status: 'VERIFIED'
+                    });
+                    if (recentVerifications.length > 5) recentVerifications.pop();
+                    updateRecentTable();
+                } else {
+                    resultArea.style.display = 'none';
+                    placeholderArea.style.display = 'flex';
+                    document.getElementById('errorMessage').textContent = 'Identity Not Found';
+                    errorArea.classList.remove('d-none');
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('errorMessage').textContent = 'System Error';
+                errorArea.classList.remove('d-none');
+            }
+        });
+
+        function updateRecentTable() {
+            const tbody = document.getElementById('recentVerifications');
+            if (recentVerifications.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-3">No recent activity</td></tr>';
+            } else {
+                tbody.innerHTML = recentVerifications.map(v =>
+                    `<tr>
+                        <td>${v.time}</td>
+                        <td class="fw-bold text-dark">${v.nin}</td>
+                        <td><span class="badge bg-success">VERIFIED</span></td>
+                    </tr>`
+                ).join('');
+            }
+        }
+
+        function loadSimRegistrations() {
+            fetch('/telecom/sim-registrations')
+                .then(res => res.json())
+                .then(data => {
+                    const tbody = document.getElementById('simRegistrationsTable');
+                    if (data.success && data.data && data.data.length > 0) {
+                        document.getElementById('totalSims').textContent = data.data.length;
+                        tbody.innerHTML = data.data.map(reg =>
+                            `<tr>
+                                <td class="fw-bold">${reg.first_name} ${reg.last_name}</td>
+                                <td>${reg.phone_number}</td>
+                                <td class="text-muted small">${reg.nin}</td>
+                                <td><span class="badge-status ${getStatusBadge(reg.status)}">${reg.status}</span></td>
+                                <td>${getStatusActions(reg.phone_number, reg.status)}</td>
+                            </tr>`
+                        ).join('');
+                    } else {
+                        document.getElementById('totalSims').textContent = '0';
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">No registered SIMs</td></tr>';
+                    }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                });
+        }
+
+        function loadAnalytics() {
+            fetch('/telecom/analytics')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('todayCount').textContent = data.data.today || 0;
+                        document.getElementById('weekCount').textContent = data.data.week || 0;
+
+                        // Status breakdown
+                        const breakdown = document.getElementById('statusBreakdown');
+                        if (data.data.byStatus && data.data.byStatus.length > 0) {
+                            breakdown.innerHTML = data.data.byStatus.map(s =>
+                                `<div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted small fw-bold">${s.status}</span>
+                                    <span class="badge bg-dark rounded-pill">${s.count}</span>
+                                </div>`
+                            ).join('');
+                        }
+                    }
+                });
+        }
+
+        fetch('/check-auth')
+            .then(res => res.json())
+            .then(data => {
+                if (!data.authenticated) {
+                    window.location.href = '/index.html';
+                } else {
+                    document.getElementById('orgName').textContent = data.organization;
+                    loadSimRegistrations();
+                    loadAnalytics();
+                }
+            });
+
+        document.getElementById('registerSimBtn').addEventListener('click', () => {
+            const nin = document.getElementById('ninDisplay').textContent;
+            const phoneNumber = document.getElementById('phoneNumberInput').value;
+
+            if (!phoneNumber) {
+                showModal('Input Required', 'Please input a phone number', 'error');
+                return;
+            }
+
+            const validPrefixes = ['072', '073', '074', '075', '076', '078', '079'];
+            const prefix = phoneNumber.substring(0, 3);
+            const isValidFormat = /^\d{9}$/.test(phoneNumber) && validPrefixes.includes(prefix);
+
+            if (!isValidFormat) {
+                showModal('Invalid Format', 'Required: 9 digits, Orange prefix (07X)', 'error');
+                return;
+            }
+
+            showModal('Link SIM', `Link SIM: ${phoneNumber} to NIN: ${nin}?`, 'confirm', async () => {
+                try {
+                    const res = await fetch('/telecom/register-sim', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nin: nin, phone_number: phoneNumber })
+                    });
+
+                    const data = await res.json();
+
+                    if (data.success) {
+                        showModal('Success', 'SIM Linked Successfully', 'success');
+                        document.getElementById('phoneNumberInput').value = '';
+                        loadSimRegistrations();
+                        loadAnalytics();
+                    } else {
+                        showModal('Error', 'Error: ' + data.error, 'error');
+                    }
+                } catch (err) {
+                    showModal('System Error', 'An unexpected error occurred', 'error');
+                }
+            });
+        });
+
+        fetch('/stats/total-records')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('totalRecords').textContent = data.count || 0;
+            })
+            .catch(() => {
+                document.getElementById('totalRecords').textContent = '0';
+            });
+    </script>
+</body>
+
+</html>

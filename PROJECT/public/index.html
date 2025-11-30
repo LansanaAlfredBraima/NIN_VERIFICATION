@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VerifyNIN - Secure Login Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card fade-in">
+            <div class="login-header">
+                <i class="fas fa-shield-alt fa-3x mb-3"></i>
+                <h1>VerifyNIN</h1>
+                <p>National Civil Registration Authority</p>
+                <p style="font-size: 12px; margin-top: 5px;">Secure Identity Verification System</p>
+            </div>
+            <div class="login-body">
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="fas fa-user me-2"></i>Username
+                        </label>
+                        <input type="text" class="form-control" id="username" placeholder="Enter your username"
+                            required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock me-2"></i>Password
+                        </label>
+                        <input type="password" class="form-control" id="password" placeholder="Enter your password"
+                            required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </button>
+                    </div>
+                    <div id="error-message" class="alert alert-danger mt-3 text-center" style="display: none;"></div>
+                </form>
+                <div class="text-center mt-4">
+                    <small class="text-muted">
+                        <i class="fas fa-lock me-1"></i>Secured with SSL Encryption
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="security-badge">
+        <i class="fas fa-shield-check"></i> Secure Connection
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+            const submitBtn = document.querySelector('button[type="submit"]');
+
+            // Visual feedback
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Logging in...';
+            submitBtn.disabled = true;
+            errorDiv.style.display = 'none';
+
+            try {
+                console.log('Attempting login for:', username);
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (data.success) {
+                    submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Success!';
+                    submitBtn.classList.replace('btn-primary', 'btn-success');
+
+                    setTimeout(() => {
+                        if (data.role === 'super_admin' || data.role === 'ncra_admin') {
+                            window.location.href = '/admin.html';
+                        } else if (data.role === 'telecom_officer') {
+                            window.location.href = '/telecom_dashboard.html';
+                        } else if (data.role === 'bank_officer') {
+                            window.location.href = '/bank_dashboard.html';
+                        } else {
+                            window.location.href = '/dashboard.html';
+                        }
+                    }, 500);
+                } else {
+                    throw new Error(data.error || 'Login failed');
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>' + (err.message || 'Connection error');
+                errorDiv.style.display = 'block';
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Login';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

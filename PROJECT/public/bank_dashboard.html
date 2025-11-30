@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UBA Sierra Leone - Banking Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --uba-red: #ED1C24;
+            --uba-dark: #333333;
+            --uba-gray: #f4f4f4;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--uba-gray);
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        .uba-logo-text {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ED1C24;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .sidebar-brand-text {
+            font-size: 0.75rem;
+            color: #666;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav-link {
+            color: #555;
+            padding: 15px 25px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #ED1C24;
+            background: #fff5f5;
+            border-left-color: #ED1C24;
+        }
+
+        .nav-link i {
+            width: 25px;
+            margin-right: 10px;
+        }
+
+        .user-profile {
+            margin-top: auto;
+            padding: 20px;
+            border-top: 1px solid #eee;
+            background: #fafafa;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #333;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .page-title h2 {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .page-title p {
+            color: #888;
+            margin-bottom: 0;
+        }
+
+        /* Metric Cards */
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid #eee;
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-color: #ED1C24;
+        }
+
+        .metric-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 5px;
+            height: 100%;
+            background: #ED1C24;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .metric-card:hover::after {
+            opacity: 1;
+        }
+
+        .metric-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(237, 28, 36, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ED1C24;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: #888;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid #eee;
+            margin-bottom: 25px;
+        }
+
+        .content-card h5 {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        /* Buttons & Inputs */
+        .btn-uba {
+            background: #ED1C24;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-uba:hover {
+            background: #c41e3a;
+            color: white;
+            box-shadow: 0 5px 15px rgba(237, 28, 36, 0.3);
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            background: #f9f9f9;
+        }
+
+        .form-control:focus {
+            background: white;
+            border-color: #ED1C24;
+            box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.1);
+        }
+
+        /* Verification Result */
+        .verification-result {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .customer-photo {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #999;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .account-number {
+            font-family: 'Courier New', monospace;
+            font-weight: 700;
+            color: #ED1C24;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        /* Tables */
+        .table-uba thead th {
+            background: #f8f9fa;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #eee;
+            padding: 15px;
+        }
+
+        .table-uba tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        /* Badges */
+        .badge-uba {
+            background: #ED1C24;
+            color: white;
+        }
+
+        .badge-active {
+            background: #e6f4ea;
+            color: #1e7e34;
+            border: 1px solid #1e7e34;
+        }
+
+        .badge-frozen {
+            background: #e8f0fe;
+            color: #1967d2;
+            border: 1px solid #1967d2;
+        }
+
+        .badge-closed {
+            background: #f1f3f4;
+            color: #5f6368;
+            border: 1px solid #5f6368;
+        }
+
+        .badge-suspended {
+            background: #fef7e0;
+            color: #f29900;
+            border: 1px solid #f29900;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        /* Account Card */
+        .account-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .account-card:hover {
+            border-color: #ED1C24;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Responsive Design - Enhanced */
+        @media (max-width: 992px) {
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .metric-card {
+                padding: 15px;
+            }
+
+            .metric-value {
+                font-size: 1.8rem;
+            }
+
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+
+            .overlay.active {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-header {
+                padding: 10px 0;
+            }
+
+            .page-title h2 {
+                font-size: 1.1rem;
+            }
+
+            .metric-card {
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+
+            .metric-value {
+                font-size: 1.5rem;
+            }
+
+            .metric-label {
+                font-size: 0.75rem;
+            }
+
+            .metric-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .content-card {
+                padding: 15px;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .table {
+                min-width: 600px;
+                font-size: 0.85rem;
+            }
+
+            .btn-uba,
+            .btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .customer-photo {
+                width: 80px !important;
+                height: 80px !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .top-header {
+                padding: 8px 0;
+            }
+
+            .page-title h2 {
+                font-size: 1rem;
+            }
+
+            .metric-card {
+                padding: 10px;
+            }
+
+            .metric-value {
+                font-size: 1.3rem;
+            }
+
+            .metric-label {
+                font-size: 0.7rem;
+            }
+
+            .metric-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+
+            .content-card {
+                padding: 12px;
+            }
+
+            .content-card h5 {
+                font-size: 1rem;
+            }
+
+            .table {
+                font-size: 0.75rem;
+            }
+
+            .btn-uba,
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+            .form-control,
+            .form-select {
+                padding: 6px;
+                font-size: 0.85rem;
+            }
+
+            .badge {
+                font-size: 0.65rem;
+                padding: 3px 6px;
+            }
+
+            .customer-photo {
+                width: 60px !important;
+                height: 60px !important;
+            }
+
+            .info-label {
+                font-size: 0.7rem;
+            }
+
+            .info-value {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="uba-logo-text">UBA</div>
+            <span class="sidebar-brand-text">Sierra Leone Banking</span>
+        </div>
+        <nav class="nav flex-column">
+            <a class="nav-link active" href="#" id="nav-dashboard"><i class="fas fa-home"></i>
+                Dashboard</a>
+            <a class="nav-link" href="#" id="nav-customers"><i class="fas fa-users"></i> Customers</a>
+            <a class="nav-link" href="#" id="nav-accounts"><i class="fas fa-wallet"></i> Accounts</a>
+            <a class="nav-link" href="#" id="nav-transactions"><i class="fas fa-exchange-alt"></i>
+                Transactions</a>
+            <a class="nav-link" href="#" id="nav-reports"><i class="fas fa-chart-pie"></i> Reports</a>
+            <a class="nav-link" href="#" id="nav-settings"><i class="fas fa-cog"></i> Settings</a>
+        </nav>
+        <div class="user-profile">
+            <div class="d-flex align-items-center mb-2">
+                <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-2"
+                    style="width: 40px; height: 40px;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <div class="fw-bold text-dark" style="font-size: 0.9rem;" id="orgName">Bank Officer
+                    </div>
+                    <div class="text-muted" style="font-size: 0.75rem;">UBA Bank</div>
+                </div>
+            </div>
+            <a href="/logout" class="btn btn-outline-danger btn-sm w-100">
+                <i class="fas fa-sign-out-alt me-1"></i>Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <div class="top-header">
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="page-title">
+                <h2 id="pageTitle">Dashboard Overview</h2>
+                <p id="pageDesc">Welcome back, here's what's happening today.</p>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="me-4 text-end">
+                    <div class="text-muted small">Current Time</div>
+                    <div class="fw-bold" id="currentTime">--:--</div>
+                </div>
+                <button class="btn btn-light rounded-circle position-relative">
+                    <i class="fas fa-bell text-secondary"></i>
+                    <span
+                        class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW: DASHBOARD -->
+        <div id="view-dashboard" class="view-section">
+            <!-- Metrics Row -->
+            <div class="row mb-4">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div class="metric-value" id="verificationCount">0</div>
+                        <div class="metric-label">Verifications Today</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="metric-value" id="totalAccounts">0</div>
+                        <div class="metric-label">Total Accounts</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="metric-value" id="totalRecords">--</div>
+                        <div class="metric-label">NIN Records</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="metric-card">
+                        <div class="metric-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="metric-value text-success">Active</div>
+                        <div class="metric-label">System Status</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Left Column: Verification & Analytics -->
+                <div class="col-lg-5">
+                    <!-- Customer Verification -->
+                    <div class="content-card">
+                        <h5>Customer Verification</h5>
+                        <p class="text-muted small mb-3">Verify customer identity before any operation.
+                        </p>
+                        <div class="input-group mb-3">
+                            <input type="text" id="ninInput" class="form-control"
+                                placeholder="Enter NIN (e.g., SL123456789)">
+                            <button class="btn btn-uba" type="button" id="verifyBtn">Verify
+                                Identity</button>
+                        </div>
+                        <div id="errorArea" class="alert alert-danger" style="display: none;">
+                            <i class="fas fa-exclamation-triangle me-2"></i><span id="errorMessage"></span>
+                        </div>
+                    </div>
+
+                    <!-- Search Accounts -->
+                    <div class="content-card">
+                        <h5>Search Accounts</h5>
+                        <div class="input-group">
+                            <input type="text" id="searchInput" class="form-control"
+                                placeholder="Search by Account Number or NIN">
+                            <button class="btn btn-uba" type="button" id="searchBtn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Analytics -->
+                    <div class="content-card">
+                        <h5>Quick Analytics</h5>
+                        <div class="row text-center mb-3">
+                            <div class="col-6 border-end">
+                                <h3 class="fw-bold text-dark" id="todayCount">0</h3>
+                                <div class="small text-muted">Today</div>
+                            </div>
+                            <div class="col-6">
+                                <h3 class="fw-bold text-dark" id="weekCount">0</h3>
+                                <div class="small text-muted">This Week</div>
+                            </div>
+                        </div>
+                        <div id="typeBreakdown" class="small"></div>
+                        <div id="statusBreakdown" class="small mt-2"></div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Results & Recent -->
+                <div class="col-lg-7">
+                    <!-- Verification Result Area -->
+                    <div id="resultArea" style="display: none;" class="content-card">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0 text-success">Verified Customer</h5>
+                            <span class="badge bg-success">VERIFIED</span>
+                        </div>
+
+                        <div class="verification-result mb-4">
+                            <div class="d-flex">
+                                <img id="userPhoto" src="" alt="Photo" class="customer-photo me-3"
+                                    style="width: 100px; height: 100px; object-fit: cover;">
+                                <div class="flex-grow-1">
+                                    <div class="row">
+                                        <div class="col-6 mb-2">
+                                            <div class="info-label">First Name</div>
+                                            <div class="info-value" id="firstName">--</div>
+                                        </div>
+                                        <div class="col-6 mb-2">
+                                            <div class="info-label">Last Name</div>
+                                            <div class="info-value" id="lastName">--</div>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <div class="info-label">NIN</div>
+                                            <div class="info-value text-danger" id="ninDisplay">--</div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="info-label">Address</div>
+                                            <div class="info-value small" id="address">--</div>
+                                            <div style="display:none"><span id="dob"></span><span id="gender"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Create Account Form -->
+                        <div class="bg-light p-3 rounded border">
+                            <h6 class="fw-bold mb-3">Open New Account</h6>
+                            <div id="fraudAlert" class="alert alert-warning small" style="display: none;">
+                                <i class="fas fa-exclamation-circle me-1"></i><span id="fraudMessage"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="small text-muted">Account Type</label>
+                                <select id="accountTypeInput" class="form-select form-select-sm">
+                                    <option value="">Select Type</option>
+                                    <option value="Savings">Savings Account</option>
+                                    <option value="Current">Current Account</option>
+                                    <option value="Fixed Deposit">Fixed Deposit</option>
+                                    <option value="Business">Business Account</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="small text-muted">Initial Balance</label>
+                                <input type="number" id="initialBalanceInput" class="form-control form-control-sm"
+                                    placeholder="0.00">
+                            </div>
+                            <div class="mb-3">
+                                <label class="small text-muted">Generated Account No.</label>
+                                <input type="text" id="generatedAccountNumber"
+                                    class="form-control form-control-sm bg-white" readonly>
+                            </div>
+                            <button class="btn btn-uba w-100 btn-sm" id="createAccountBtn">Create
+                                Account</button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Verifications -->
+                    <div class="content-card">
+                        <h5>Recent Verifications</h5>
+                        <div class="table-responsive">
+                            <table class="table table-uba mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>NIN</th>
+                                        <th>Name</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentVerifications">
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-3">No recent
+                                            verifications</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: CUSTOMERS -->
+        <div id="view-customers" class="view-section" style="display: none;">
+            <div class="content-card text-center py-5">
+                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                <h3>Customer Management</h3>
+                <p class="text-muted">Use the Dashboard to verify and manage customers.</p>
+                <button class="btn btn-uba" onclick="document.getElementById('nav-dashboard').click()">Go to
+                    Dashboard</button>
+            </div>
+        </div>
+
+        <!-- VIEW: ACCOUNTS -->
+        <div id="view-accounts" class="view-section" style="display: none;">
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <h5 class="mb-0 border-0 p-0">All Bank Accounts</h5>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="loadBankAccounts()"><i
+                            class="fas fa-sync-alt"></i> Refresh</button>
+                </div>
+                <div id="accountsList">
+                    <p class="text-center text-muted py-4">Loading accounts...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: TRANSACTIONS -->
+        <div id="view-transactions" class="view-section" style="display: none;">
+            <div class="content-card text-center py-5">
+                <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
+                <h3>Transactions</h3>
+                <p class="text-muted">Transaction history module coming soon.</p>
+            </div>
+        </div>
+
+        <!-- VIEW: REPORTS -->
+        <div id="view-reports" class="view-section" style="display: none;">
+            <!-- Report Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="content-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1">Financial Reports</h5>
+                                <p class="text-muted small mb-0">Comprehensive overview of banking
+                                    operations</p>
+                            </div>
+                            <div>
+                                <button class="btn btn-outline-secondary btn-sm me-2" onclick="window.print()"><i
+                                        class="fas fa-print"></i> Print</button>
+                                <button class="btn btn-uba btn-sm" onclick="loadReportsData()"><i
+                                        class="fas fa-sync-alt"></i> Refresh</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-wallet"></i></div>
+                        <div class="metric-value" id="report-total-accounts">0</div>
+                        <div class="metric-label">Total Accounts</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="metric-value text-success" id="report-active-accounts">0</div>
+                        <div class="metric-label">Active Accounts</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-snowflake"></i></div>
+                        <div class="metric-value text-primary" id="report-frozen-accounts">0</div>
+                        <div class="metric-label">Frozen Accounts</div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <div class="metric-card">
+                        <div class="metric-icon"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="metric-value" id="report-total-balance">Le 0</div>
+                        <div class="metric-label">Total Balance</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row mb-4">
+                <div class="col-lg-6 mb-3">
+                    <div class="content-card">
+                        <h5>Account Status Distribution</h5>
+                        <canvas id="statusChart" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <div class="content-card">
+                        <h5>Account Type Distribution</h5>
+                        <canvas id="typeChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Tables -->
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <div class="content-card">
+                        <h5>Recent Account Activity</h5>
+                        <div class="table-responsive">
+                            <table class="table table-uba mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Account Number</th>
+                                        <th>Customer Name</th>
+                                        <th>Account Type</th>
+                                        <th>Balance</th>
+                                        <th>Status</th>
+                                        <th>Created Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reportsTableBody">
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">Loading
+                                            reports
+                                            data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Type Breakdown -->
+            <div class="row">
+                <div class="col-lg-6 mb-3">
+                    <div class="content-card">
+                        <h5>Account Type Summary</h5>
+                        <div id="accountTypeSummary">
+                            <p class="text-muted small">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                    <div class="content-card">
+                        <h5>Status Summary</h5>
+                        <div id="accountStatusSummary">
+                            <p class="text-muted small">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: SETTINGS -->
+        <div id="view-settings" class="view-section" style="display: none;">
+            <div class="content-card">
+                <h5>System Settings</h5>
+                <p>Application version: 1.0.0</p>
+                <hr>
+                <div class="mb-3">
+                    <label class="form-label">Theme</label>
+                    <select class="form-select" disabled>
+                        <option>Light (Default)</option>
+                        <option>Dark</option>
+                    </select>
+                </div>
+                <button class="btn btn-uba" disabled>Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Modal -->
+    <div class="modal fade" id="customModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white border-bottom-0">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Notification</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <div class="d-flex align-items-center">
+                        <i id="modalIcon" class="fas fa-info-circle fa-2x me-3 text-primary"></i>
+                        <p id="modalMessage" class="mb-0 fs-6 fw-medium">Message goes here</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"
+                        id="modalCancelBtn">Close</button>
+                    <button type="button" class="btn btn-sm" style="background-color: #ED1C24; color: white;"
+                        id="modalConfirmBtn">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="js/bank.js"></script>
+    <div class="overlay" id="overlay"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const overlay = document.getElementById('overlay');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            }
+
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', toggleSidebar);
+            }
+
+            if (overlay) {
+                overlay.addEventListener('click', toggleSidebar);
+            }
+
+            // Close sidebar when clicking a nav link on mobile
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 992) {
+                        sidebar.classList.remove('active');
+                        overlay.classList.remove('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

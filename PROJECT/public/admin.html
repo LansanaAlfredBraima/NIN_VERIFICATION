@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCRA Admin Panel - Sierra Leone</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e8f5e9 0%, #e3f2fd 100%);
+            min-height: 100vh;
+        }
+
+        /* Sierra Leone Colors */
+        :root {
+            --sl-green: #1EB53A;
+            --sl-white: #FFFFFF;
+            --sl-blue: #0072C6;
+            --sl-green-dark: #158c2e;
+            --sl-blue-dark: #005a9e;
+        }
+
+        .ncra-navbar {
+            background: linear-gradient(90deg, var(--sl-green) 0%, var(--sl-blue) 100%);
+            box-shadow: 0 4px 20px rgba(30, 181, 58, 0.3);
+            padding: 1.2rem 0;
+        }
+
+        .ncra-navbar .navbar-brand {
+            font-weight: 800;
+            font-size: 1.6rem;
+            color: white !important;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .sl-flag-badge {
+            display: inline-block;
+            width: 40px;
+            height: 30px;
+            background: linear-gradient(to bottom, var(--sl-green) 33%, white 33%, white 66%, var(--sl-blue) 66%);
+            border-radius: 5px;
+            margin-right: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, rgba(30, 181, 58, 0.1) 0%, rgba(0, 114, 198, 0.1) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--sl-green);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-header h2 {
+            color: var(--sl-green);
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .page-header p {
+            color: #666;
+            margin: 10px 0 0 0;
+            font-size: 1.1rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-top: 5px solid var(--sl-green);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--sl-green) 0%, var(--sl-blue) 100%);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 50px rgba(30, 181, 58, 0.2);
+        }
+
+        .metric-card .metric-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--sl-green) 0%, var(--sl-blue) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(30, 181, 58, 0.3);
+        }
+
+        .metric-card .metric-value {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--sl-green) 0%, var(--sl-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 15px 0;
+        }
+
+        .metric-card .metric-label {
+            font-size: 0.95rem;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .nav-tabs {
+            border-bottom: 3px solid var(--sl-green);
+            background: white;
+            border-radius: 15px 15px 0 0;
+            padding: 10px 10px 0 10px;
+        }
+
+        .nav-tabs .nav-link {
+            color: #666;
+            font-weight: 600;
+            border: none;
+            padding: 15px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--sl-green);
+            background: rgba(30, 181, 58, 0.1);
+            border-radius: 10px 10px 0 0;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: white;
+            background: linear-gradient(135deg, var(--sl-green) 0%, var(--sl-blue) 100%);
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 -3px 10px rgba(30, 181, 58, 0.3);
+        }
+
+        .btn-sl-primary {
+            background: linear-gradient(135deg, var(--sl-green) 0%, var(--sl-blue) 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 12px 30px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(30, 181, 58, 0.3);
+        }
+
+        .btn-sl-primary:hover {
+            background: linear-gradient(135deg, var(--sl-green-dark) 0%, var(--sl-blue-dark) 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 181, 58, 0.4);
+        }
+
+        .btn-sl-success {
+            background: var(--sl-green);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 12px 30px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-sl-success:hover {
+            background: var(--sl-green-dark);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--sl-green);
+            box-shadow: 0 0 0 0.2rem rgba(30, 181, 58, 0.25);
+        }
+
+        .table-sl {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .table-sl thead {
+            background: linear-gradient(135deg, var(--sl-green) 0%, var(--sl-blue) 100%);
+            color: white;
+        }
+
+        .table-sl thead th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            padding: 15px;
+            border: none;
+        }
+
+        .table-sl tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table-sl tbody tr:hover {
+            background: rgba(30, 181, 58, 0.05);
+        }
+
+        .table-sl tbody td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .camera-container {
+            background: linear-gradient(135deg, rgba(30, 181, 58, 0.05) 0%, rgba(0, 114, 198, 0.05) 100%);
+            border: 3px dashed var(--sl-green);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .camera-placeholder {
+            background: white;
+            padding: 80px;
+            border-radius: 15px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .captured-photo {
+            border: 5px solid var(--sl-green);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(30, 181, 58, 0.3);
+        }
+
+        .alert-sl-info {
+            background: linear-gradient(135deg, rgba(30, 181, 58, 0.1) 0%, rgba(0, 114, 198, 0.1) 100%);
+            border-left: 5px solid var(--sl-green);
+            color: #333;
+            border-radius: 10px;
+        }
+
+        .badge-sl {
+            background: linear-gradient(135deg, var(--sl-green) 0%, var(--sl-blue) 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--sl-green) 0%, var(--sl-blue) 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-header .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .secure-badge {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--sl-green) 0%, var(--sl-blue) 100%);
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 8px 30px rgba(30, 181, 58, 0.4);
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .action-btn {
+            margin: 0 3px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--sl-green) 0%, var(--sl-blue) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(30, 181, 58, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .container-fluid {
+                padding: 15px;
+            }
+
+            .metric-card {
+                padding: 20px;
+            }
+
+            .metric-value {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+
+            .page-header {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .metric-card {
+                margin-bottom: 20px;
+            }
+
+            .nav-tabs .nav-link {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .table-sl {
+                min-width: 800px;
+            }
+
+            .camera-container {
+                padding: 15px;
+            }
+
+            .camera-placeholder {
+                padding: 40px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand span:last-child {
+                display: none;
+            }
+
+            .navbar-brand::after {
+                content: 'NCRA Admin';
+            }
+
+            .metric-value {
+                font-size: 2rem;
+            }
+
+            .metric-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tabs .nav-link {
+                border-radius: 0;
+                margin-bottom: 5px;
+                text-align: left;
+            }
+
+            .btn-sl-primary,
+            .btn-sl-success {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark ncra-navbar">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <span class="sl-flag-badge"></span>
+                <span>NCRA Admin Panel - Sierra Leone</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="text-white me-4">
+                    <i class="fas fa-user-shield me-2"></i>Administrator
+                </span>
+                <a href="/logout" class="btn btn-light btn-sm">
+                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2><i class="fas fa-shield-alt me-3"></i>National Civil Registration Authority</h2>
+            <p>Citizen Identity Management System - Republic of Sierra Leone</p>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="metric-value" id="totalUsers">0</div>
+                    <div class="metric-label">System Users</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="metric-value" id="totalNINs">0</div>
+                    <div class="metric-label">NIN Records</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="metric-value" id="totalVerifications">0</div>
+                    <div class="metric-label">Verifications</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="metric-value" style="font-size: 2rem;" id="currentTime">--:--</div>
+                    <div class="metric-label">Current Time</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users"
+                    type="button" role="tab">
+                    <i class="fas fa-users me-2"></i>User Management
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button"
+                    role="tab">
+                    <i class="fas fa-user-plus me-2"></i>Register Citizen
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="nin-records-tab" data-bs-toggle="tab" data-bs-target="#nin-records"
+                    type="button" role="tab">
+                    <i class="fas fa-database me-2"></i>NIN Records
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="logs-tab" data-bs-toggle="tab" data-bs-target="#logs" type="button"
+                    role="tab">
+                    <i class="fas fa-history me-2"></i>System Logs
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content content-card" id="adminTabsContent">
+            <!-- Users Tab -->
+            <div class="tab-pane fade show active" id="users" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4><i class="fas fa-users-cog me-2" style="color: var(--sl-green);"></i>System Users</h4>
+                    <button class="btn btn-sl-success" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                        <i class="fas fa-user-plus me-2"></i>Add User
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sl">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Organization</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="5" class="text-center py-4">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Register Citizen Tab -->
+            <div class="tab-pane fade" id="register" role="tabpanel">
+                <h4><i class="fas fa-user-plus me-2" style="color: var(--sl-green);"></i>Register New Citizen</h4>
+                <p class="text-muted mb-4">Capture photo and enter citizen details for NIN generation</p>
+
+                <!-- Camera Section -->
+                <div class="camera-container mb-4">
+                    <h5 class="mb-4"><i class="fas fa-camera me-2"></i>Capture Citizen Photo (Required)</h5>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <video id="camera" width="100%" height="auto" autoplay
+                                style="border: 3px solid var(--sl-green); border-radius: 15px; display: none;"></video>
+                            <canvas id="canvas" style="display: none;"></canvas>
+                            <img id="capturedPhoto" src="" alt="Captured Photo" class="img-fluid captured-photo"
+                                style="max-width: 100%; display: none;">
+                            <div id="cameraPlaceholder" class="camera-placeholder">
+                                <i class="fas fa-camera fa-4x mb-3" style="color: var(--sl-green);"></i>
+                                <p class="text-muted">Click "Start Camera" to capture citizen photo</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="button" class="btn btn-sl-primary" id="startCamera">
+                            <i class="fas fa-video me-2"></i>Start Camera
+                        </button>
+                        <button type="button" class="btn btn-sl-success" id="captureBtn" style="display: none;">
+                            <i class="fas fa-camera me-2"></i>Capture Photo
+                        </button>
+                        <button type="button" class="btn btn-warning" id="retakeBtn" style="display: none;">
+                            <i class="fas fa-redo me-2"></i>Retake
+                        </button>
+                    </div>
+                </div>
+
+                <form id="registerCitizenForm" class="mt-4">
+                    <div class="row">
+                        <div class="col-12 mb-4">
+                            <div class="alert alert-sl-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <strong>NIN will be auto-generated</strong> when you register the citizen
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-user me-2"></i>Surname</label>
+                            <input type="text" class="form-control" name="last_name" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-user me-2"></i>First Name</label>
+                            <input type="text" class="form-control" name="first_name" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-user me-2"></i>Middle Name</label>
+                            <input type="text" class="form-control" name="middle_name">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-calendar me-2"></i>Date of Birth</label>
+                            <input type="date" class="form-control" name="dob" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-venus-mars me-2"></i>Gender</label>
+                            <select class="form-select" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="MALE">Male</option>
+                                <option value="FEMALE">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-ruler-vertical me-2"></i>Height
+                                (cm)</label>
+                            <input type="number" class="form-control" name="height" placeholder="e.g., 170" step="0.01">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-calendar-check me-2"></i>Expiry
+                                Date</label>
+                            <input type="date" class="form-control" name="expiry_date">
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-map-marker-alt me-2"></i>Address</label>
+                            <input type="text" class="form-control" name="address"
+                                placeholder="e.g., 123 Main St, Freetown" required>
+                        </div>
+                    </div>
+                    <input type="hidden" name="photo_data" id="photoData">
+                    <button type="submit" class="btn btn-sl-primary btn-lg" id="submitBtn" disabled>
+                        <i class="fas fa-id-card me-2"></i>Register Citizen & Generate ID Card
+                    </button>
+                </form>
+
+                <div id="registerSuccess" class="alert alert-success mt-3" style="display: none;">
+                    <i class="fas fa-check-circle me-2"></i>Citizen registered successfully!
+                </div>
+                <div id="registerError" class="alert alert-danger mt-3" style="display: none;">
+                    <i class="fas fa-exclamation-triangle me-2"></i><span id="registerErrorMsg"></span>
+                </div>
+
+                <!-- ID Card Preview -->
+                <div id="idCardPreview" class="mt-4" style="display: none;">
+                    <h5><i class="fas fa-id-card me-2"></i>Generated ID Card</h5>
+                    <div id="idCardContainer" class="text-center"></div>
+                    <button type="button" class="btn btn-sl-success mt-3" id="downloadIdCard">
+                        <i class="fas fa-download me-2"></i>Download ID Card
+                    </button>
+                </div>
+            </div>
+
+            <!-- NIN Records Tab -->
+            <div class="tab-pane fade" id="nin-records" role="tabpanel">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4><i class="fas fa-database me-2" style="color: var(--sl-green);"></i>NIN Records Database</h4>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sl">
+                        <thead>
+                            <tr>
+                                <th>Photo</th>
+                                <th>NIN</th>
+                                <th>Name</th>
+                                <th>DOB</th>
+                                <th>Gender</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ninRecordsTableBody">
+                            <tr>
+                                <td colspan="6" class="text-center py-4">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Logs Tab -->
+            <div class="tab-pane fade" id="logs" role="tabpanel">
+                <h4><i class="fas fa-clipboard-list me-2" style="color: var(--sl-green);"></i>System Activity Logs</h4>
+                <div class="table-responsive">
+                    <table class="table table-sl table-sm">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody">
+                            <tr>
+                                <td colspan="4" class="text-center py-4">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Citizen Modal -->
+    <div class="modal fade" id="editCitizenModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>Edit Citizen Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editCitizenForm">
+                        <div class="row">
+                            <div class="col-md-12 mb-3 text-center">
+                                <img id="editPhotoPreview" src="" class="img-thumbnail mb-2"
+                                    style="height: 150px; border: 3px solid var(--sl-green);">
+                                <br>
+                                <button type="button" class="btn btn-sm btn-sl-primary" id="editRetakePhotoBtn">
+                                    <i class="fas fa-camera me-1"></i>Update Photo
+                                </button>
+                                <div id="editCameraContainer" style="display: none;" class="mt-2">
+                                    <video id="editCamera" width="320" height="240" autoplay
+                                        style="border: 2px solid var(--sl-green); border-radius: 10px;"></video>
+                                    <br>
+                                    <button type="button" class="btn btn-sm btn-sl-success mt-1"
+                                        id="editCaptureBtn">Capture</button>
+                                    <canvas id="editCanvas" style="display: none;"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">NIN (Cannot be changed)</label>
+                                <input type="text" class="form-control" name="nin" id="editNin" readonly
+                                    style="background-color: #e9ecef;">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Surname</label>
+                                <input type="text" class="form-control" name="last_name" id="editLastName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">First Name</label>
+                                <input type="text" class="form-control" name="first_name" id="editFirstName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Middle Name</label>
+                                <input type="text" class="form-control" name="middle_name" id="editMiddleName">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Date of Birth</label>
+                                <input type="date" class="form-control" name="dob" id="editDob" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Gender</label>
+                                <select class="form-select" name="gender" id="editGender" required>
+                                    <option value="MALE">Male</option>
+                                    <option value="FEMALE">Female</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Height (cm)</label>
+                                <input type="number" class="form-control" name="height" id="editHeight" step="0.01">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Address</label>
+                                <input type="text" class="form-control" name="address" id="editAddress" required>
+                            </div>
+                            <input type="hidden" name="photo_data" id="editPhotoData">
+                        </div>
+                        <button type="submit" class="btn btn-sl-primary w-100">
+                            <i class="fas fa-save me-2"></i>Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>Add New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-user me-2"></i>Username</label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-lock me-2"></i>Password</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-user-tag me-2"></i>Role</label>
+                            <select class="form-select" name="role" required>
+                                <option value="">Select Role</option>
+                                <option value="super_admin">Super Admin</option>
+                                <option value="ncra_admin">NCRA Admin</option>
+                                <option value="telecom_officer">Telecom Officer</option>
+                                <option value="bank_user">Bank User</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-building me-2"></i>Organization</label>
+                            <input type="text" class="form-control" name="organization" required>
+                        </div>
+                        <button type="submit" class="btn btn-sl-primary w-100">
+                            <i class="fas fa-user-plus me-2"></i>Create User
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="secure-badge">
+        <i class="fas fa-shield-check me-2"></i>Secure Government Portal
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

@@ -84,4 +84,4 @@ The system comes seeded with the following default accounts.
 -   `database/`: Contains the persistent SQLite database file (`nin_db.sqlite`).
 
 ## License
-This project is proprietary software for the National Civil Registration Authority (NCRA).
+This project is an academic work developed for educational purposes.
